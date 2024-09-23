@@ -28,20 +28,10 @@ int main(void)
 
 	DDRB |= (1<<PB0);
 	DDRB |= (1<<PB1);
-  //DDRD |= (1<<PD7);
-  //DDRD &= ~(1 << PD2); // Cấu hình PD2 (INT0) là ngõ vào
-  //PORTD |= (1 << PD2); // Bật pull-up resistor cho PD2
-  //PORTD |= (1 << PD7);
-  
-  // Cấu hình chế độ ngủ sâu
-    //set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+
     while (1) 
     {
-    // Đưa vi điều khiển vào chế độ ngủ sâu
-        // sleep_enable();
-        // sleep_cpu();
-        // sleep_disable();
-    //PORTB |= (1 << PB2); // Bật pull-up resistor cho PD2
+
     process_and_display_angles();
     }
 	return 0;

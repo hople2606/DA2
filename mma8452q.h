@@ -43,6 +43,9 @@
 #define G_SCALE 2.0      // Phạm vi ±2g của cảm biến
 #define RAW_RESOLUTION 4096.0  // Độ phân giải 14-bit của cảm biến
 
+#define SAMPLE_COUNT 10 // 5s / 0.5s
+
+
 typedef uint8_t byte;
 
 typedef struct {
@@ -58,6 +61,8 @@ uint16_t read_sensor_data(uint8_t msb_reg, uint8_t lsb_reg);
 float raw_to_g(int16_t raw_value);
 Angles calculate_angles(void);
 void process_and_display_angles();
+
+void process_and_display_angles_medium();
 
 void init_interrupts(void);
 void init_sleep_mode(void);

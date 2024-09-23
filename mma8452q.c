@@ -113,24 +113,24 @@ void process_and_display_angles() {
     if (abs(angles.angle_x) < 20 && abs(angles.angle_y) < 20) {
         PORTB |= (1 << PB0);
         PORTB &= ~(1 << PB1);
-        if (abs(angles.angle_x) > abs(angles.angle_y) ){
+        /*if (abs(angles.angle_x) > abs(angles.angle_y) ){
         //uart_transmit_string("Trasmitted: ");
         uart_transmit_integer(abs(angles.angle_x));
         } else {
         //uart_transmit_string("Trasmitted: ");
         uart_transmit_integer(abs(angles.angle_y));
-        }
+        }*/
         _delay_ms(100);
     } else if (abs(angles.angle_x) > 20 || abs(angles.angle_y) > 20) {
         PORTB &= ~(1 << PB0);
         PORTB |= (1 << PB1);
-        if (abs(angles.angle_x) > 20 ){
+        /*if (abs(angles.angle_x) > 20 ){
         //uart_transmit_string("Trasmitted: ");
         uart_transmit_integer(abs(angles.angle_x));
         } else {
         //uart_transmit_string("Trasmitted: ");
         uart_transmit_integer(abs(angles.angle_y));
-        }
+        }*/
         _delay_ms(100);
     }
 
@@ -159,9 +159,9 @@ void init_sleep_mode(void) {
 
 uint8_t is_button_pressed() {
     // Giả sử PB2 sẽ ở mức thấp khi nhấn nút
-    if (!(PIND & (1 << PD7))) {
+    if (!(PINC & (1 << PC6))) {
         _delay_ms(50); // Debounce
-        if (!(PIND & (1 << PD7))) {
+        if (!(PINC & (1 << PC6))) {
             return 1;
         }
     }
