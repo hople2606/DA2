@@ -33,6 +33,7 @@ int main(void)
     {
 
     process_and_display_angles();
+    //process_and_display_angles_medium();
     }
 	return 0;
 }

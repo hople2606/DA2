@@ -167,3 +167,96 @@ uint8_t is_button_pressed() {
     }
     return 0;
 }
+
+
+void process_and_display_angles_medium() {
+    char buffer[16];
+    //Angles angles = calculate_angles();
+    Angles angles;
+    int sum_x = 0, sum_y = 0, sum_z = 0;
+    int count = 0;
+
+    //--------------------------------------//
+// Kiểm tra nếu nút được nhấn và hệ quy chiếu chưa được thiết lập
+    if (is_button_pressed() && !reference_set) {
+        // Thiết lập hệ quy chiếu
+        angles = calculate_angles();
+        offset_x = angles.angle_x;
+        offset_y = angles.angle_y;
+        offset_z = angles.angle_z;
+        reference_set = 1; // Đánh dấu rằng hệ quy chiếu đã được thiết lập
+    }
+
+    // Điều chỉnh giá trị góc với offset
+    if (reference_set) {
+        for (int i = 0; i < 5; i++) {
+            angles = calculate_angles();
+
+            // Điều chỉnh giá trị góc với offset
+            angles.angle_x -= offset_x;
+            angles.angle_y -= offset_y;
+            angles.angle_z -= offset_z;
+
+            // Tính tổng giá trị góc
+            sum_x += abs(angles.angle_x);
+            sum_y += abs(angles.angle_y);
+            sum_z += abs(angles.angle_z);
+            count++;
+
+            if (abs(angles.angle_x)<10 || abs(angles.angle_y)< 10 || abs(angles.angle_z) < 10)
+            {
+              ssd1306_clear_line(4);
+              ssd1306_clear_line(5);
+              ssd1306_clear_line(6);
+            }
+            snprintf(buffer, sizeof(buffer), "X: %d", abs(angles.angle_x));
+            ssd1306_display_string(0, 4, buffer);
+
+            snprintf(buffer, sizeof(buffer), "Y: %d", abs(angles.angle_y));
+            ssd1306_display_string(0, 5, buffer);
+
+            snprintf(buffer, sizeof(buffer), "Z: %d", abs(angles.angle_z));
+            ssd1306_display_string(0, 6, buffer);
+
+            _delay_ms(1000); // Đợi 0.5 giây
+        }
+    }
+            // Tính giá trị trung bình
+        int avg_x = sum_x / count;
+        int avg_y = sum_y / count;
+        int avg_z = sum_z / count;
+//     //--------------------------------------//
+    ssd1306_clear_line(4);
+    ssd1306_clear_line(5);
+    ssd1306_clear_line(6);
+
+    // Nếu có dữ liệu từ UART
+
+    if (avg_x < 20 && avg_y < 20) {
+        PORTB |= (1 << PB0);
+        PORTB &= ~(1 << PB1);
+        snprintf(buffer, sizeof(buffer), "X: %d", avg_x);
+        ssd1306_display_string(0, 4, buffer);
+
+        snprintf(buffer, sizeof(buffer), "Y: %d", avg_y);
+        ssd1306_display_string(0, 5, buffer);
+
+        snprintf(buffer, sizeof(buffer), "Z: %d", avg_z);
+        ssd1306_display_string(0, 6, buffer);
+        _delay_ms(3000);
+    } else if (avg_x > 20 || avg_y > 20) {
+        PORTB &= ~(1 << PB0);
+        PORTB |= (1 << PB1);
+        snprintf(buffer, sizeof(buffer), "X: %d", avg_x);
+        ssd1306_display_string(0, 4, buffer);
+
+        snprintf(buffer, sizeof(buffer), "Y: %d", avg_y);
+        ssd1306_display_string(0, 5, buffer);
+
+        snprintf(buffer, sizeof(buffer), "Z: %d", avg_z);
+        ssd1306_display_string(0, 6, buffer);
+        _delay_ms(3000);
+    }
+
+
+}
